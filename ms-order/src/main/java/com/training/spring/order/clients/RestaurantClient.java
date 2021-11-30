@@ -15,7 +15,10 @@ import com.training.spring.restaurant.rest.models.MenuRestObj;
 public class RestaurantClient {
 
     @Autowired
-    private RestTemplate rt;
+    private RestTemplate   rt;
+
+    @Autowired
+    private IRestaurantApi restaurantApi;
 
     public String calculateMenu(final Order orderParam) {
         MenuRestObj menuRestObjLoc = new MenuRestObj();
@@ -31,6 +34,13 @@ public class RestaurantClient {
                                                      MenuInfo.class);
         return "Port : " + menuInfoLoc.getMessage() + " Price : " + menuInfoLoc.getPrice();
 
+    }
+
+    public String calculateMenu2(final Order orderParam) throws MyErrorException {
+        MenuRestObj menuRestObjLoc = new MenuRestObj();
+        menuRestObjLoc.setMeals(orderParam.getMeals());
+        MenuInfo menuInfoLoc = this.restaurantApi.calculateMenu(menuRestObjLoc);
+        return "Port : " + menuInfoLoc.getMessage() + " Price : " + menuInfoLoc.getPrice();
     }
 
 }

@@ -13,11 +13,12 @@ public class ErrorObj {
     private Integer        cause;
 
 
-    public void add(final ErrorObj errorObjParam) {
+    public ErrorObj add(final ErrorObj errorObjParam) {
         if (this.subErrors == null) {
             this.subErrors = new ArrayList<>();
         }
         this.subErrors.add(errorObjParam);
+        return this;
     }
 
     public List<ErrorObj> getSubErrors() {
