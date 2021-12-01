@@ -24,6 +24,16 @@ public class ErrorHandlerAdvice {
     @Value("${app.bounded-context}")
     private String bc;
 
+    @ExceptionHandler(MyErrorException.class)
+    @ResponseStatus(code = HttpStatus.BAD_GATEWAY)
+    public ErrorObj handleError(final MyErrorException exceptionParam) {
+        return this.generateError()
+                   .setMessage("error while calling another ms")
+                   .setCause(3800)
+                   .add(exceptionParam.getErrorObj());
+    }
+
+
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public ErrorObj handleError(final IllegalArgumentException exceptionParam) {

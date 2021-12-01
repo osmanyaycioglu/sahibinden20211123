@@ -7,6 +7,7 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.live.error.MyErrorException;
 import com.training.spring.order.models.Order;
 import com.training.spring.restaurant.rest.models.MenuInfo;
 import com.training.spring.restaurant.rest.models.MenuRestObj;
@@ -39,6 +40,7 @@ public class RestaurantClient {
     public String calculateMenu2(final Order orderParam) throws MyErrorException {
         MenuRestObj menuRestObjLoc = new MenuRestObj();
         menuRestObjLoc.setMeals(orderParam.getMeals());
+        menuRestObjLoc.setMenuname(orderParam.getName());
         MenuInfo menuInfoLoc = this.restaurantApi.calculateMenu(menuRestObjLoc);
         return "Port : " + menuInfoLoc.getMessage() + " Price : " + menuInfoLoc.getPrice();
     }

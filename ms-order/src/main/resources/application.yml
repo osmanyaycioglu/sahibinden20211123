@@ -1,0 +1,81 @@
+app:
+  bounded-context: order
+  domain: restaurant
+  microservice: order
+feign:
+  circuitbreaker:
+    enabled: true
+  client:
+    config:
+      default:
+        connect-timeout: 1000
+        decode404: false
+        read-timeout: 5000
+        logger-level: full
+        errorDecoder: com.live.error.MyRestErrorDecoder
+        requestInterceptors:
+        - com.training.spring.order.clients.MyRequestInterceptor
+  httpclient:
+    enabled: true
+server:
+  error:
+    include-binding-errors: always
+    include-exception: true
+    include-message: always
+    include-stacktrace: always
+  port: ${app.port:9000}
+spring:
+  application:
+    name: order
+  cloud:
+    loadbalancer:
+      health-check:
+        initial-delay: 5000
+        interval: 1000
+      retry:
+        enabled: true
+        max-retries-on-next-service-instance: 3
+        max-retries-on-same-service-instance: 0
+        retry-on-all-operations: true
+  config:
+    import: configserver:http://127.0.0.1:8888
+resilience4j:
+  retry:
+    metrics:
+      enabled: true
+    instances:
+      myretry:
+        max-attempts: 2
+        retry-exceptions:
+          - java.lang.IllegalArgumentException
+        result-predicate: com.training.spring.resilience.MyRetryPredicate
+  circuitbreaker:
+    metrics:
+      enabled: true
+    instances:
+      mycb:
+        sliding-window-type: count-based
+        sliding-window-size: 20
+        minimum-number-of-calls: 10
+        failure-rate-threshold: 30
+        wait-duration-in-open-state: 10s
+        automatic-transition-from-open-to-half-open-enabled: false
+        permitted-number-of-calls-in-half-open-state: 5
+        max-wait-duration-in-half-open-state: 5s
+        register-health-indicator: true
+        allow-health-indicator-to-fail: false
+        slow-call-duration-threshold: 500
+        slow-call-rate-threshold: 40
+
+        
+
+
+
+
+
+
+
+
+
+
+

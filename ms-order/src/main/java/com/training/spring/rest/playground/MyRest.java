@@ -2,6 +2,8 @@ package com.training.spring.rest.playground;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,7 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/myrest")
+@RefreshScope
 public class MyRest {
+
+    @Value("${deneme.prop2}")
+    private String test;
+
+    @GetMapping("/test")
+    public String test() {
+        return "Test str : " + this.test;
+    }
 
     @GetMapping("/hello1")
     public String hello1() {

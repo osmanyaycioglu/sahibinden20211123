@@ -11,4 +11,9 @@ public class ErrorConfig {
         return new ErrorHandlerAdvice();
     }
 
+    @Bean
+    public MyRestErrorDecoder myRestErrorDecoder() {
+        return new MyRestErrorDecoder();
+    }
+
 }

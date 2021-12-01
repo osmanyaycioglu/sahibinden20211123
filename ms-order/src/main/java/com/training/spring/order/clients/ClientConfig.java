@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -35,6 +36,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @EnableScheduling
+@LoadBalancerClient(name = "xyz", configuration = LoadBalancerConfig.class)
 public class ClientConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(ClientConfig.class);
@@ -65,7 +67,7 @@ public class ClientConfig {
             long delta = System.nanoTime();
             HttpHeaders headersLoc = requestParam.getHeaders();
             headersLoc.add("X-Origin",
-                           "restaurant.subdomain.restaurant.order");
+                           "restaurant.subdomain.order.order");
             ClientHttpResponse executeLoc = executionParam.execute(requestParam,
                                                                    bodyParam);
             if (ClientConfig.logger.isInfoEnabled()) {
@@ -81,9 +83,7 @@ public class ClientConfig {
     @Bean
     @LoadBalanced
     public RestTemplate restTemplate() {
-        RestTemplateBuilder builderLoc = new RestTemplateBuilder();
-        builderLoc.requestFactory(this::clientHttpRequestFactory);
-        builderLoc.errorHandler(new MyRestClientErrorHandler());
+        RestTemplateBuilder builderLoc = this.restTemplateBuilder();
         RestTemplate rt = builderLoc.build();
         List<ClientHttpRequestInterceptor> interceptorsLoc = rt.getInterceptors();
         if (CollectionUtils.isEmpty(interceptorsLoc)) {
@@ -92,6 +92,15 @@ public class ClientConfig {
         interceptorsLoc.add(new MyRestClientInterceptor());
         rt.setInterceptors(interceptorsLoc);
         return rt;
+    }
+
+    @Bean
+    public RestTemplateBuilder restTemplateBuilder() {
+        RestTemplateBuilder builderLoc = new RestTemplateBuilder();
+        builderLoc.requestFactory(this::clientHttpRequestFactory);
+        builderLoc.errorHandler(new MyRestClientErrorHandler());
+        builderLoc.interceptors(new MyRestClientInterceptor());
+        return builderLoc;
     }
 
     @Bean

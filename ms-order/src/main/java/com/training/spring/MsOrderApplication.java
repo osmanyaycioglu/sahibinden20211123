@@ -2,12 +2,15 @@ package com.training.spring;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 import com.live.error.ErrorConfig;
@@ -28,6 +31,11 @@ public class MsOrderApplication implements ApplicationRunner {
     private MyBean       myBean3;
 
     private final MyBean myBean4;
+
+    @Bean
+    public MessageConverter messageConverter() {
+        return new Jackson2JsonMessageConverter();
+    }
 
 
     public MsOrderApplication(final MyBean myBean4) {

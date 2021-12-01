@@ -1,6 +1,4 @@
-package com.training.spring.order.clients;
-
-import com.live.error.ErrorObj;
+package com.live.error;
 
 public class MyErrorException extends Exception {
 

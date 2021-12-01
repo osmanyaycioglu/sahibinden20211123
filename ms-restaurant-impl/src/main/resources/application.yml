@@ -1,0 +1,19 @@
+app:
+  bounded-context: restaurant
+  domain: restaurant
+  microservice: order
+server:
+  port: ${app.port:10000}
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 50
+    max-swallow-size: 2000
+    max-keep-alive-requests: 200
+    max-connections: 500
+    keep-alive-timeout: 120000
+spring:
+  application:
+    name: restaurant
+  config:
+    import: configserver:http://127.0.0.1:8888
